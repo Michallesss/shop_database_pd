@@ -113,3 +113,18 @@ INSERT INTO `koszyk` (`KoszykID`, `ZamowienieID`, `Ilosc`, `ProduktID`)
 VALUES (NULL, '2', '1', '3');
 INSERT INTO `koszyk` (`KoszykID`, `ZamowienieID`, `Ilosc`, `ProduktID`)
 VALUES (NULL, '3', '1', '4');
+
+DELIMITER //
+CREATE OR REPLACE PROCEDURE koszykpr (IN KoszykID INT, ZamowienieID INT, ProduktID INT, Ilosc INT)
+BEGIN
+IF EXISTS 
+    (SELECT koszyk.koszykID from Koszyk 
+     WHERE koszyk.ProduktID = ProduktID 
+     AND koszyk.ZamowienieID = ZamowienieID) THEN
+UPDATE koszyk SET koszyk.Ilosc= koszyk.Ilosc + Ilosc WHERE koszyk.ProduktID = ProduktID AND koszyk.ZamowienieID = ZamowienieID;
+    ELSE
+    INSERT INTO Koszyk VALUES (null, ProduktID, ZamowienieID, Ilosc);
+    END IF;
+END//
+DELIMITER ;
+/*CALL koszykpr(1, 1, 1, 1)*/
